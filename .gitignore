@@ -3,6 +3,12 @@ logs
 *.log
 npm-debug.log*
 
+# Idea Jetbrains products
+.idea/
+
+# Bower
+bower_components/
+
 # Runtime data
 pids
 *.pid

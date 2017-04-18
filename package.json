@@ -1,0 +1,29 @@
+{
+  "name": "server-control-panel",
+  "version": "1.0.0",
+  "description": "Simple control panel to control a server using a web interface.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AceXintense/Server-Control-Panel.git"
+  },
+  "keywords": [
+    "control",
+    "panel",
+    "server",
+    "node",
+    "frontend"
+  ],
+  "author": "Sam Grew",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AceXintense/Server-Control-Panel/issues"
+  },
+  "homepage": "https://github.com/AceXintense/Server-Control-Panel#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
