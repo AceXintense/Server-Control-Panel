@@ -1,4 +1,7 @@
-var socket = io.connect('http://localhost');
+var protocol = location.protocol;
+var slashes = protocol.concat("//");
+var host = slashes.concat(window.location.hostname);
+var socket = io.connect(host);
 
 angular.module('serverControlPanelApp', [])
     .controller('ServerControlPanelController', ['$scope', function ($scope) {
