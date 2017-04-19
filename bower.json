@@ -1,0 +1,28 @@
+{
+  "name": "server-control-panel",
+  "description": "Simple control panel to control a server using a web interface.",
+  "main": "app.js",
+  "authors": [
+    "Sam Grew"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "control",
+    "panel",
+    "server",
+    "node",
+    "frontend"
+  ],
+  "homepage": "https://github.com/AceXintense/Server-Control-Panel",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "angular": "^1.6.4"
+  }
+}

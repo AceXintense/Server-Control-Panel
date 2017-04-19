@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Server Control Panel</title>
+
+    <!-- Stylesheet initialization -->
+    <link rel="stylesheet" href="resources/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="resources/css/app.css">
+
+    <!-- Script initialization -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="resources/bower_components/angular/angular.min.js"></script>
+    <script src="resources/javascript/app.js"></script>
+
+</head>
+<body ng-controller="ServerControlPanelController">
+
+        <div class="container">
+
+        <div class="row">
+
+            <div class="col-sm-12">
+                <div class="header">
+                    <h1>Server Control Panel</h1>
+                    <h3>Take control.</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-12">
+                <div class="feedback-container">
+                    <div class="feedback" ng-repeat="(id, feedback) in feedback" id="{{feedback.type}}">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="icon">
+                                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <h1>{{feedback.title}}</h1>
+                                <h3>{{feedback.description}}</h3>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <button class="btn btn-default" ng-click="removeFeedbackWithId(id)">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-default" ng-show="feedback.length > 1" ng-click="clearAllFeedback()" id="clearFeedback">Clear All Feedback</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-6">
+                <div class="card">
+                    <h1>Terminal</h1>
+
+                    <div class="terminal">
+                        <pre>{{output}}</pre>
+                    </div>
+
+                    <div class="row command-interaction">
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" ng-model="command">
+                        </div>
+                        <div class="col-sm-4">
+                            <button class="btn btn-success" ng-click="executeCommand(command)">Send Command</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card">
+                    <h1>Server Functions</h1>
+                    <button class="btn btn-danger" ng-click="executeCommand('sudo shutdown now')">Shutdown</button>
+                    <button class="btn btn-warning" ng-click="executeCommand('sudo reboot')">Restart</button>
+                    <button class="btn btn-success" ng-click="executeCommand('sudo apt update')">Update</button>
+                    <button class="btn btn-success" ng-click="executeCommand('sudo apt upgrade -y')">Upgrade</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
