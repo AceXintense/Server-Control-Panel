@@ -6,6 +6,7 @@ var io = require('socket.io')(server);
 
 server.listen(80);
 app.use(express.static('public'));
+console.log('Server created on port 80. Access it here http://localhost');
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
@@ -13,14 +14,14 @@ app.get('/', function (req, res) {
 
 var feedback = [];
 var lastRunCommand = '';
+var showModals = true;
 
 io.on('connection', function (socket) {
 
     function emitOutput() {
         socket.emit('output', {
             output: lastRunCommand.stdout
-        });
-        socket.broadcast.emit('output', {
+        }).broadcast.emit('output', {
             output: lastRunCommand.stdout
         });
     }
@@ -28,13 +29,21 @@ io.on('connection', function (socket) {
     function emitFeeback() {
         socket.emit('feedback',
             feedback
-        );
-        socket.broadcast.emit('feedback',
+        ).broadcast.emit('feedback',
             feedback
         );
     }
-    emitFeeback();
+
+    function emitModals() {
+        socket.emit('showModals',
+            showModals
+        ).broadcast.emit('showModals',
+            showModals
+        );
+    }
     emitOutput();
+    emitFeeback();
+    emitModals();
 
     socket.on('Add Feedback', function (data) {
         feedback = data;
@@ -58,5 +67,10 @@ io.on('connection', function (socket) {
     socket.on('Clear All Feedback', function () {
         feedback = [];
         emitFeeback();
+    });
+
+    socket.on('Toggle Show Modals', function () {
+        showModals = !showModals;
+        emitModals();
     });
 });

@@ -20,15 +20,54 @@
 </head>
 <body ng-controller="ServerControlPanelController">
 
-        <div class="container">
+    <div class="container">
+        
+        <div class="settings-card" ng-show="showSettings">
+            <h1>Settings</h1>
+            <label for="showModals-settings">Show command warnings?</label>
+            <input type="checkbox" ng-model="showModals" ng-click="toggleShowModals()" id="showModals-settings">
+            <div class="action-buttons" ng-show="false">
+                <button class="btn btn-success">Apply</button>
+                <button class="btn btn-warning">Revert</button>
+                <button class="btn btn-danger">Close</button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" ng-show="modals.length > 0 && showModals">
+
+            <div class="modal" ng-repeat="modal in modals">
+                <h1>{{modal.title}}</h1>
+                <p>{{modal.description}}</p>
+                <pre>{{command}}</pre>
+
+                <label for="showModals">Show command warnings?</label>
+                <input type="checkbox" ng-click="toggleShowModals()" ng-checked="showModals" id="showModals">
+                <div id="input" ng-show="modal.type === 'input'">
+                    <input type="text" class="form-control">
+                    <buttton class="btn btn-default" ng-click="dismissModal()">Submit</buttton>
+                </div>
+                <div id="yes-no" ng-show="modal.type === 'yes-no'">
+                    <buttton class="btn btn-default" ng-click="dismissModal()">Yes</buttton>
+                    <buttton class="btn btn-default" ng-click="cancelModal()">No</buttton>
+                </div>
+                <div id="okay" ng-show="modal.type === 'okay' || modal.type === null">
+                    <buttton class="btn btn-default" ng-click="dismissModal()">Okay</buttton>
+                </div>
+            </div>
+
+        </div>
 
         <div class="row">
 
-            <div class="col-sm-12">
+            <div class="col-sm-10">
                 <div class="header">
                     <h1>Server Control Panel</h1>
                     <h3>Take control.</h3>
                 </div>
+            </div>
+
+            <div class="col-sm-2">
+                <button class="btn btn-default settings" ng-click="toggleSettings()"><i class="fa fa-cog" aria-hidden="true"></i> Settings</button>
             </div>
 
         </div>
@@ -76,7 +115,8 @@
                             <input type="text" class="form-control" ng-model="command">
                         </div>
                         <div class="col-sm-4">
-                            <button class="btn btn-success" ng-click="executeCommand(command)">Send Command</button>
+                            <button class="btn btn-success" ng-click="executeCommand(command)" ng-hide="showModals">Send Command</button>
+                            <button class="btn btn-success" ng-click="executeCommandViaModal(command)" ng-show="showModals">Send Command</button>
                         </div>
                     </div>
                 </div>
@@ -85,10 +125,18 @@
             <div class="col-sm-6">
                 <div class="card">
                     <h1>Server Functions</h1>
-                    <button class="btn btn-danger" ng-click="executeCommand('sudo shutdown now')">Shutdown</button>
-                    <button class="btn btn-warning" ng-click="executeCommand('sudo reboot')">Restart</button>
-                    <button class="btn btn-success" ng-click="executeCommand('sudo apt update')">Update</button>
-                    <button class="btn btn-success" ng-click="executeCommand('sudo apt upgrade -y')">Upgrade</button>
+                    <div ng-hide="showModals">
+                        <button class="btn btn-danger" ng-click="executeCommand('sudo shutdown now')">Shutdown</button>
+                        <button class="btn btn-warning" ng-click="executeCommand('sudo reboot')">Restart</button>
+                        <button class="btn btn-success" ng-click="executeCommand('sudo apt update')">Update</button>
+                        <button class="btn btn-success" ng-click="executeCommand('sudo apt upgrade -y')">Upgrade</button>
+                    </div>
+                    <div ng-show="showModals">
+                        <button class="btn btn-danger" ng-click="executeCommandViaModal('sudo shutdown now')">Shutdown</button>
+                        <button class="btn btn-warning" ng-click="executeCommandViaModal('sudo reboot')">Restart</button>
+                        <button class="btn btn-success" ng-click="executeCommandViaModal('sudo apt update')">Update</button>
+                        <button class="btn btn-success" ng-click="executeCommandViaModal('sudo apt upgrade -y')">Upgrade</button>
+                    </div>
                 </div>
             </div>
 
