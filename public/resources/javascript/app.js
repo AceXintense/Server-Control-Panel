@@ -41,6 +41,28 @@ angular.module('serverControlPanelApp', [])
             });
         };
     })
+    .directive('onUp', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 38) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.onUp);
+                    });
+                }
+            });
+        };
+    })
+    .directive('onDown', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 40) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.onDown);
+                    });
+                }
+            });
+        };
+    })
     .controller('ServerControlPanelController', ['$scope', function ($scope) {
         var validTypes = [
             'error',
@@ -117,6 +139,7 @@ angular.module('serverControlPanelApp', [])
         $scope.resetTabIndex = function () {
             binTabIndex = 0;
             fileOrDirectoryTabIndex = 0;
+            commandHistoryIndex = 0;
             if ($scope.command.length === 0) {
                 binTabSearch = [];
             }
@@ -195,6 +218,23 @@ angular.module('serverControlPanelApp', [])
         });
 
         $scope.commandHistory = [];
+        var commandHistoryIndex = 0;
+
+        $scope.navigateCommandHistory = function (direction) {
+            switch (direction) {
+                case 'up':
+                    if (commandHistoryIndex > 0) {
+                        commandHistoryIndex--;
+                    }
+                    break;
+                case 'down':
+                    if (commandHistoryIndex < $scope.commandHistory.length) {
+                        commandHistoryIndex++;
+                    }
+                    break;
+            }
+            $scope.command = $scope.commandHistory[commandHistoryIndex];
+        };
 
         socket.on('commandHistory', function (data) {
             $scope.$apply(function() {

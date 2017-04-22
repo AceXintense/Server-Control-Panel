@@ -135,8 +135,8 @@
                             </div>
                         </div>
                         <div class="col-sm-7">
-                            <input type="text" ng-trim="false" class="form-control command-line" ng-hide="showModals" ng-model="command" on-enter="executeCommand(command)" on-tab="getTabList()" on-backspace="resetTabIndex()">
-                            <input type="text" ng-trim="false" class="form-control command-line" ng-show="showModals" ng-model="command" on-enter="executeCommandViaModal(command)" on-tab="getTabList()" on-backspace="resetTabIndex()">
+                            <input type="text" ng-trim="false" class="form-control command-line" ng-hide="showModals" ng-model="command" on-enter="executeCommand(command)" on-tab="getTabList()" on-backspace="resetTabIndex()" on-up="navigateCommandHistory('up')" on-down="navigateCommandHistory('down')">
+                            <input type="text" ng-trim="false" class="form-control command-line" ng-show="showModals" ng-model="command" on-enter="executeCommandViaModal(command)" on-tab="getTabList()" on-backspace="resetTabIndex()" on-up="navigateCommandHistory('up')" on-down="navigateCommandHistory('down')">
                         </div>
                         <div class="col-sm-2">
                             <button class="btn btn-success" ng-click="executeCommand(command)" ng-hide="showModals">Send</button>
