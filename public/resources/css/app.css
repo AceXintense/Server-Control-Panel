@@ -123,12 +123,20 @@ html, body {
   background-color: #fff;
   border-radius: 5px;
   padding: 5px;
-  height: 500px; }
+  height: 500px;
+  position: relative; }
   .card .terminal pre {
     background-color: #263238;
     color: white;
     height: 100%;
     margin: 0; }
+  .card .terminal .working-directory {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 5px; }
 
 /* support backdrop-filter */
 @supports (-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px)) {

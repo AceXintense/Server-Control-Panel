@@ -16,6 +16,7 @@ var feedback = [];
 var lastRunCommand = '';
 var showModals = true;
 var commandHistory = [];
+var workingDirectory = '';
 
 io.on('connection', function (socket) {
 
@@ -50,10 +51,19 @@ io.on('connection', function (socket) {
             commandHistory
         );
     }
+    function emitWorkingDirectory() {
+        workingDirectory = shell.exec("pwd");
+        socket.emit('workingDirectory',
+            workingDirectory
+        ).broadcast.emit('workingDirectory',
+            workingDirectory
+        );
+    }
     emitOutput();
     emitFeeback();
     emitModals();
     emitCommandHistory();
+    emitWorkingDirectory();
 
     socket.on('Add Feedback', function (data) {
         feedback = data;
@@ -65,6 +75,7 @@ io.on('connection', function (socket) {
         commandHistory.push(data.command);
         emitOutput();
         emitCommandHistory();
+        emitWorkingDirectory();
     });
 
     socket.on('Remove Feedback With ID', function (data) {

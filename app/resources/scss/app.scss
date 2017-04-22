@@ -179,11 +179,20 @@ html, body {
     border-radius: 5px;
     padding: 5px;
     height: 500px;
+    position: relative;
     pre {
       background-color: #263238;
       color: white;
       height: 100%;
       margin: 0;
+    }
+    .working-directory {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: #fff;
+      padding: 5px;
+      border-radius: 5px;
     }
   }
 

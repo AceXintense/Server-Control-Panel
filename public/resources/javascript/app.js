@@ -77,6 +77,13 @@ angular.module('serverControlPanelApp', [])
             }
         }
 
+        $scope.workingDirectory = '';
+        socket.on('workingDirectory', function (data) {
+            $scope.$apply(function() {
+                $scope.workingDirectory = data;
+            });
+        });
+
         $scope.commandHistory = [];
 
         socket.on('commandHistory', function (data) {
