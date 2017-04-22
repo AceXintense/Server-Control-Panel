@@ -33,7 +33,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <label for="purge">Purge command history cache?</label>
-                    <button class="btn btn-danger" id="purge">Purge</button>
+                    <button class="btn btn-danger" ng-click="purgeCommandHistory()" id="purge">Purge</button>
                 </div>
             </div>
             <div class="action-buttons" ng-show="false">
@@ -135,8 +135,8 @@
                             </div>
                         </div>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control command-line" ng-hide="showModals" ng-model="command" on-enter="executeCommand(command)">
-                            <input type="text" class="form-control command-line" ng-show="showModals" ng-model="command" on-enter="executeCommandViaModal(command)">
+                            <input type="text" ng-trim="false" class="form-control command-line" ng-hide="showModals" ng-model="command" on-enter="executeCommand(command)" on-tab="getTabList()" on-backspace="resetTabIndex()">
+                            <input type="text" ng-trim="false" class="form-control command-line" ng-show="showModals" ng-model="command" on-enter="executeCommandViaModal(command)" on-tab="getTabList()" on-backspace="resetTabIndex()">
                         </div>
                         <div class="col-sm-2">
                             <button class="btn btn-success" ng-click="executeCommand(command)" ng-hide="showModals">Send</button>

@@ -21,11 +21,11 @@ var workingDirectory = '';
 io.on('connection', function (socket) {
 
     function emitOutput() {
-        socket.emit('output', {
-            output: lastRunCommand.stdout
-        }).broadcast.emit('output', {
-            output: lastRunCommand.stdout
-        });
+        socket.emit('output',
+            lastRunCommand
+        ).broadcast.emit('output',
+            lastRunCommand
+        );
     }
 
     function emitFeeback() {
@@ -59,11 +59,31 @@ io.on('connection', function (socket) {
             workingDirectory
         );
     }
+    function emitBinTab() {
+        var binDirectory = shell.exec("ls -1a /bin");
+        var files = binDirectory.match(/\w+/g);
+        socket.emit('binTab',
+            files
+        ).broadcast.emit('binTab',
+            files
+        );
+    }
+    function emitFileOrDirectoryTab() {
+        var fileOrDirectory = shell.exec("ls -1a");
+        var files = fileOrDirectory.match(/[.|\w]\w+/g);
+        socket.emit('fileOrDirectoryTab',
+            files
+        ).broadcast.emit('fileOrDirectoryTab',
+            files
+        );
+    }
     emitOutput();
     emitFeeback();
     emitModals();
     emitCommandHistory();
     emitWorkingDirectory();
+    emitBinTab();
+    emitFileOrDirectoryTab();
 
     socket.on('Add Feedback', function (data) {
         feedback = data;
@@ -71,8 +91,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('Execute Command', function (data) {
-        lastRunCommand = shell.exec(data.command);
-        commandHistory.push(data.command);
+        lastRunCommand = shell.exec(data);
+        commandHistory.push(data);
         emitOutput();
         emitCommandHistory();
         emitWorkingDirectory();
@@ -95,5 +115,10 @@ io.on('connection', function (socket) {
     socket.on('Toggle Show Modals', function () {
         showModals = !showModals;
         emitModals();
+    });
+
+    socket.on('Purge Command History', function () {
+        commandHistory = [];
+        emitCommandHistory();
     });
 });

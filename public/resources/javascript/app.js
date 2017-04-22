@@ -17,6 +17,30 @@ angular.module('serverControlPanelApp', [])
             });
         };
     })
+    .directive('onTab', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 9) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.onTab);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    })
+    .directive('onBackspace', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 8) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.onBackspace);
+                    });
+                }
+            });
+        };
+    })
     .controller('ServerControlPanelController', ['$scope', function ($scope) {
         var validTypes = [
             'error',
@@ -29,6 +53,7 @@ angular.module('serverControlPanelApp', [])
         $scope.toggleSettings = function () {
             $scope.showSettings = !$scope.showSettings;
         };
+        $scope.command = '';
 
         function isValidType(type) {
             for (var i = 0; i < validTypes.length; i++) {
@@ -59,7 +84,6 @@ angular.module('serverControlPanelApp', [])
             this.description = description;
             this.type = type;
             $scope.modals.push(this);
-            // socket.emit('Add Feedback', $scope.feedback);
         }
 
         function empty(value) {
@@ -90,6 +114,79 @@ angular.module('serverControlPanelApp', [])
             }
         }
 
+        $scope.resetTabIndex = function () {
+            binTabIndex = 0;
+            fileOrDirectoryTabIndex = 0;
+            if ($scope.command.length === 0) {
+                binTabSearch = [];
+            }
+        };
+
+        $scope.binTab = [];
+        $scope.fileOrDirectoryTab = [];
+        socket.on('binTab', function (data) {
+            $scope.$apply(function() {
+                $scope.binTab = data;
+            });
+        });
+        socket.on('fileOrDirectoryTab', function (data) {
+            $scope.$apply(function() {
+                $scope.fileOrDirectoryTab = data;
+            });
+        });
+        var binTabIndex = 0;
+        var fileOrDirectoryTabIndex = 0;
+        var binTabSearch = [];
+        $scope.getTabList = function () {
+            if (binTabSearch.length <= 0) {
+                for (var i = 0; i < $scope.binTab.length; i++) {
+                    if ($scope.binTab[i].includes($scope.command)) {
+                        binTabSearch.push($scope.binTab[i]);
+                    }
+                }
+            }
+
+            if ($scope.command !== undefined && $scope.command.match(/\s/g) !== null) {
+                if (fileOrDirectoryTabIndex < $scope.fileOrDirectoryTab.length) {
+                    if (fileOrDirectoryTabIndex > 0) {
+                        $scope.command = $scope.command.replace($scope.fileOrDirectoryTab[fileOrDirectoryTabIndex - 1], $scope.fileOrDirectoryTab[fileOrDirectoryTabIndex]);
+                    } else {
+                        $scope.command += $scope.fileOrDirectoryTab[fileOrDirectoryTabIndex];
+                    }
+                    fileOrDirectoryTabIndex++;
+                } else {
+                    $scope.command = $scope.command.replace($scope.fileOrDirectoryTab[fileOrDirectoryTabIndex - 1], '');
+                    binTabSearch = [];
+                    fileOrDirectoryTabIndex = 0;
+                }
+            } else if ($scope.command !== undefined && $scope.command.length > 0) {
+                if (binTabIndex < binTabSearch.length) {
+                    if (binTabIndex > 0) {
+                        $scope.command = $scope.command.replace(binTabSearch[binTabIndex - 1], binTabSearch[binTabIndex]);
+                    } else {
+                        $scope.command = binTabSearch[binTabIndex];
+                    }
+                    binTabIndex++;
+                } else {
+                    binTabSearch = [];
+                    binTabIndex = 0;
+                }
+            } else {
+                if (binTabIndex < $scope.binTab.length) {
+                    if (binTabIndex > 0) {
+                        $scope.command = $scope.command.replace($scope.binTab[binTabIndex - 1], $scope.binTab[binTabIndex]);
+                    } else {
+                        $scope.command = $scope.binTab[binTabIndex];
+                    }
+                    binTabIndex++;
+                } else {
+                    $scope.command = $scope.binTab[binTabIndex];
+                    binTabSearch = [];
+                    binTabIndex = 0;
+                }
+            }
+        };
+
         $scope.workingDirectory = '';
         socket.on('workingDirectory', function (data) {
             $scope.$apply(function() {
@@ -104,6 +201,10 @@ angular.module('serverControlPanelApp', [])
                 $scope.commandHistory = data.slice().reverse();
             });
         });
+
+        $scope.purgeCommandHistory = function () {
+            socket.emit('Purge Command History');
+        };
 
         $scope.modals = [];
         $scope.showModals = true;
@@ -140,7 +241,7 @@ angular.module('serverControlPanelApp', [])
 
         socket.on('output', function (data) {
             $scope.$apply(function() {
-                $scope.output = data.output;
+                $scope.output = data;
             });
         });
 
@@ -161,14 +262,15 @@ angular.module('serverControlPanelApp', [])
         };
 
         $scope.executeCommand = function (command) {
+            $scope.resetTabIndex();
             $scope.command = command;
             if (empty(command)) {
                 new Feedback('Error!', 'Command is empty!', 'error');
             } else {
-               socket.emit('Execute Command', {
-                   command: command
-               });
-               $scope.command = '';
+                socket.emit('Execute Command',
+                    command
+                );
+                $scope.command = '';
             }
         };
 
@@ -183,7 +285,6 @@ angular.module('serverControlPanelApp', [])
             }
         };
     }]);
-
 angular.element(function() {
     angular.bootstrap(document, ['serverControlPanelApp']);
 });
