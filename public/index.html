@@ -24,8 +24,18 @@
         
         <div class="settings-card" ng-show="showSettings">
             <h1>Settings</h1>
-            <label for="showModals-settings">Show command warnings?</label>
-            <input type="checkbox" ng-model="showModals" ng-click="toggleShowModals()" id="showModals-settings">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="showModals-settings">Show command warnings?</label>
+                    <input type="checkbox" ng-model="showModals" ng-click="toggleShowModals()" id="showModals-settings">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="purge">Purge command history cache?</label>
+                    <button class="btn btn-danger" id="purge">Purge</button>
+                </div>
+            </div>
             <div class="action-buttons" ng-show="false">
                 <button class="btn btn-success">Apply</button>
                 <button class="btn btn-warning">Revert</button>
@@ -111,12 +121,22 @@
                     </div>
 
                     <div class="row command-interaction">
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" ng-model="command">
+                        <div class="col-sm-3">
+                            <div class="select" ng-click="commandFromHistoryBoolean = !commandFromHistoryBoolean">
+                                <p ng-hide="commandFromHistoryBoolean">Commands</p>
+                                <div class="options-container" ng-show="commandFromHistoryBoolean">
+                                    <div class="option" ng-repeat="commandFromHistory in commandHistory track by $index" ng-click="setCommand(commandFromHistory)">
+                                        <pre>{{commandFromHistory}}</pre>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <button class="btn btn-success" ng-click="executeCommand(command)" ng-hide="showModals">Send Command</button>
-                            <button class="btn btn-success" ng-click="executeCommandViaModal(command)" ng-show="showModals">Send Command</button>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control command-line" ng-model="command">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-success" ng-click="executeCommand(command)" ng-hide="showModals">Send</button>
+                            <button class="btn btn-success" ng-click="executeCommandViaModal(command)" ng-show="showModals">Send</button>
                         </div>
                     </div>
                 </div>

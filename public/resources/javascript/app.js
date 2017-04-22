@@ -77,6 +77,14 @@ angular.module('serverControlPanelApp', [])
             }
         }
 
+        $scope.commandHistory = [];
+
+        socket.on('commandHistory', function (data) {
+            $scope.$apply(function() {
+                $scope.commandHistory = data.slice().reverse();
+            });
+        });
+
         $scope.modals = [];
         $scope.showModals = true;
         $scope.modalInput;
@@ -126,6 +134,10 @@ angular.module('serverControlPanelApp', [])
 
         $scope.clearAllFeedback = function() {
             socket.emit('Clear All Feedback');
+        };
+
+        $scope.setCommand = function(command) {
+            $scope.command = command;
         };
 
         $scope.executeCommand = function (command) {

@@ -15,6 +15,7 @@ app.get('/', function (req, res) {
 var feedback = [];
 var lastRunCommand = '';
 var showModals = true;
+var commandHistory = [];
 
 io.on('connection', function (socket) {
 
@@ -41,9 +42,18 @@ io.on('connection', function (socket) {
             showModals
         );
     }
+
+    function emitCommandHistory() {
+        socket.emit('commandHistory',
+            commandHistory
+        ).broadcast.emit('commandHistory',
+            commandHistory
+        );
+    }
     emitOutput();
     emitFeeback();
     emitModals();
+    emitCommandHistory();
 
     socket.on('Add Feedback', function (data) {
         feedback = data;
@@ -52,7 +62,9 @@ io.on('connection', function (socket) {
 
     socket.on('Execute Command', function (data) {
         lastRunCommand = shell.exec(data.command);
+        commandHistory.push(data.command);
         emitOutput();
+        emitCommandHistory();
     });
 
     socket.on('Remove Feedback With ID', function (data) {

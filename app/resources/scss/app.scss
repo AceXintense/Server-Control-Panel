@@ -13,8 +13,38 @@ html, body {
   }
 }
 
+.select {
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+  background-color: #fff;
+  border-radius: 5px;
+  width: 100%;
+  padding: 7px;
+  p {
+    text-align: center;
+    margin: 0;
+  }
+  .options-container {
+    max-height: 200px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    .option {
+      pre {
+        background-color: transparent;
+        border: 0;
+        margin: 0;
+      }
+      &:hover {
+        background-color: rgb(50, 50, 50);
+        pre {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
 .modal-overlay {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   z-index: 100000000000;
@@ -138,6 +168,10 @@ html, body {
     button {
       width: 100%;
     }
+  }
+
+  .command-line {
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
   }
 
   .terminal {
