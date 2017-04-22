@@ -4,6 +4,19 @@ var host = slashes.concat(window.location.hostname);
 var socket = io.connect(host);
 
 angular.module('serverControlPanelApp', [])
+    .directive('onEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 13) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.onEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    })
     .controller('ServerControlPanelController', ['$scope', function ($scope) {
         var validTypes = [
             'error',

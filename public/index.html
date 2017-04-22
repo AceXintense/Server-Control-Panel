@@ -135,7 +135,8 @@
                             </div>
                         </div>
                         <div class="col-sm-7">
-                            <input type="text" class="form-control command-line" ng-model="command">
+                            <input type="text" class="form-control command-line" ng-hide="showModals" ng-model="command" on-enter="executeCommand(command)">
+                            <input type="text" class="form-control command-line" ng-show="showModals" ng-model="command" on-enter="executeCommandViaModal(command)">
                         </div>
                         <div class="col-sm-2">
                             <button class="btn btn-success" ng-click="executeCommand(command)" ng-hide="showModals">Send</button>
